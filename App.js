@@ -1,33 +1,21 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import URL from './URL';
+import Container from './components/Container';
+import reducer from './redux/reducers';
+import { applyMiddleware, createStore } from 'redux';
+import { Provider } from 'react-redux';
+import logger from 'redux-logger';
 
-export default class App extends React.Component {
-  render() {
-    return (
-      <View style={styles.container}>
-        <Text>Changes you make will automatically reload.</Text>
-        <Text>Shake your phone to open the developer menu.</Text>
-      </View>
-    );
-  }
+const store = createStore(
+  reducer,
+  applyMiddleware(logger),
+);
 
-  async componentDidMount() {
-    const a = await fetch(URL.MAIN);
-    const b = await a.text();
-
-    var HTMLParser = require('fast-html-parser');
-    var root = HTMLParser.parse(b);
-
-    console.log(root.querySelectorAll('.bl_body .bl_wrap'));
-  }
+const App = () => {
+  return (
+    <Provider store={store}>
+      <Container />
+    </Provider>
+  );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default App;
